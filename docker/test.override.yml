@@ -21,6 +21,10 @@ services:
 
   celery_beat:
     image: intelowlproject/intelowl:test
+    volumes:
+      - ../:/opt/deploy/intel_owl
 
   celery_worker_default:
     image: intelowlproject/intelowl:test
+    volumes:
+      - ../:/opt/deploy/intel_owl

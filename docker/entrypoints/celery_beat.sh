@@ -9,4 +9,4 @@ done
 echo "Waiting for db and UWSGI to be ready..."
 sleep 5
 
-/usr/local/bin/celery -A intel_owl.celery beat --uid www-data --gid www-data --pidfile= --schedule=/tmp/celerybeat-schedule
+/usr/local/bin/celery -A intel_owl.celery beat --uid root --gid root --pidfile= --schedule=/tmp/celerybeat-schedule
