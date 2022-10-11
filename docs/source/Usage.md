@@ -28,6 +28,31 @@ The server authentication is managed by API tokens. So, if you want to interact 
 Afterwards you can leverage the created tokens with the Intel Owl Client.
 </div>
 
+## Organizations and User management
+Starting from IntelOwl v4, a new "Organization" section is available on the GUI. This section substitute the previous permission management via Django Admin and aims to provide an easier way to manage users and visibility.
+
+### Multi Tenancy
+Thanks to the "Organization" feature, IntelOwl can be used by multiple SOCs, companies, etc...very easily.
+Right now it works very simply: only users in the same organization can see analysis of one another. An user can belong to an organization only.
+
+#### Manage organizations
+You can create a new organization by going to the "Organization" section, available under the Dropdown menu you cand find under the username.
+
+Once you create an organization, you are the unique Administrator of that organization. So you are the only one who can delete the organization, remove users and send invitations to other users.
+
+#### Accept Invites
+Once an invite has sent, the invited user has to login, go to the "Organization" section and accept the invite there. Afterwards the Administrator will be able to see the user in his "Organization" section.
+
+
+## Notifications
+Since IntelOwl v4, there is a Notifications button available on the top right of the page:
+
+<img style="border: 0.2px solid black" width=220 height=210 src="https://github.com/intelowlproject/IntelOwl/blob/master/docs/static/notifications.png">
+
+There you can read notifications provided by either your administration or the IntelOwl Maintainers.
+
+As an Admin, if you want to add a notification to have it sent to all the users, you have to login to the Django Admin interface, go to the "Notifications" section and add it there.
+
 ## Analyzers customization
 
 You can create new analyzers based on already existing modules by changing the configuration values inside `configuration/analyzer_config.json`. This file is mounted as a docker volume, so you won't need to rebuild the image.
@@ -49,31 +74,6 @@ The following are all the keys that you can change without touching the source c
 <p class="admonition-title">Hint: Advanced Configuration</p>
 You can also modify analyzer specific parameters from the configuration file or even at the time of requesting an analysis. See <a href="./Advanced-Usage.html#customize-analyzer-execution-at-time-of-request">Customize analyzer execution at time of request</a>
 </div>
-
-##### Example: add an analyzer configuration for your own Yara signatures
-
-```json
-    "Yara_Scan_Custom_Signatures": {
-        "type": "file",
-        "python_module": "yara_scan.YaraScan",
-        "description": "Executes Yara with custom signatures",
-        "disabled": false,
-        "external_service": false,
-        "leaks_info": false,
-        "secrets": {},
-        "config": {
-              "queue": "default",
-              "soft_time_limit": 100
-        },
-        "params": {
-              "directories_with_rules": {
-              "value": ["/opt/deploy/yara/custom_ruleset"],
-              "type": "list",
-              "description": ""
-            }
-        }
-    }
-```
 
 ## Connectors customization
 
@@ -182,7 +182,7 @@ The following is the list of the available analyzers you can run out-of-the-box.
 * `Yara_Scan_FireEye`: scan a file with FireEye yara rules
 * `Yara_Scan_ReversingLabs`: scan a file with [ReversingLabs yara rules](https://github.com/reversinglabs/reversinglabs-yara-rules)
 * `Yara_Scan_Custom_Signatures`: scan a file with your own added signatures
-* `Yara_Scan_YARAify_Rules`: scan a file with YARAify rules [YARAify rules](https://yaraify.abuse.ch/api/#download-yara-package)
+* `Yara_Scan_YARAify`: scan a file with YARAify rules [YARAify rules](https://yaraify.abuse.ch/api/#download-yara-package)
 * `MalwareBazaar_Get_File`: Check if a particular malware sample is known to [MalwareBazaar](https://bazaar.abuse.ch/)
 * `PEframe_Scan`: Perform static analysis on Portable Executable malware and malicious MS Office documents with [PeFrame](https://github.com/guelfoweb/peframe)
 * `Cymru_Hash_Registry_Get_File`: Check if a particular file is known to be malware by [Team Cymru](https://team-cymru.com/community-services/mhr/)
@@ -207,7 +207,9 @@ The following is the list of the available analyzers you can run out-of-the-box.
 * `Dragonfly_Emulation`: Emulate malware against [Dragonfly](https://dragonfly.certego.net?utm_source=intelowl) sandbox by [Certego S.R.L](https://certego.net?utm_source=intelowl).
 * `Virushee_Upload_File`: Check file hash and upload file sample for analysis on [Virushee API](https://api.virushee.com/).
 * `DocGuard_Upload_File`: Analyze office files in seconds. [DocGuard](https://www.docguard.io).
-*`Suricata`: Analyze PCAPs with open IDS signatures with [Suricata engine](https://github.com/OISF/suricata)
+* `Suricata`: Analyze PCAPs with open IDS signatures with [Suricata engine](https://github.com/OISF/suricata)
+* `Yara_Scan_Custom_Signatures`: scan a file with the Yara rules you added manually in IntelOwl in `/configuration/custom_yara`
+* `ELF_Info`: static ELF analysis with [pyelftools](https://github.com/eliben/pyelftools) and [telfhash](https://github.com/trendmicro/telfhash)
 
 ##### Observable analyzers (ip, domain, url, hash)
 * `VirusTotal_v3_Get_Observable`: search an observable in the VirusTotal DB

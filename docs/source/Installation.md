@@ -36,21 +36,20 @@ cp env_file_app_template env_file_app
 cp env_file_postgres_template env_file_postgres
 cp env_file_integrations_template env_file_integrations
 
-# start the app
+# verify installed dependencies
 cd ..
 ./initialize.sh
+
+# start the app
 python3 start.py prod up
 
+# now the application is running on http://localhost:80
 # create a super user 
 docker exec -ti intelowl_uwsgi python3 manage.py createsuperuser
 
-# now the backend is running on http://localhost:80
+# now you can login with the created user form http://localhost:80
 
-# run frontend
-cd frontend/
-npm i
-npm start
-# now the froentd is running on http://localhost:3001
+# Have fun!
 ```
 
 <div class="admonition hint">
@@ -205,11 +204,6 @@ There are 3 options to execute the web server:
 
 Refer to [Analyzers customization](Usage.html#analyzers-customization) and [Connectors customization](Usage.html#connectors-customization).
 
-<div class="admonition hint">
-<p class="admonition-title">Hint</p>
-You can see the full list of all available analyzers and connectors in the <a href="Usage.html#available-analyzers">Usage.html</a> or <a href="https://intelowlclient.firebaseapp.com/pages/analyzers/table">Live Demo</a>.
-</div>
-
 
 ## Run
 
@@ -238,8 +232,8 @@ You can add the parameter `-d` to run the application in the background.
 
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-Starting from IntelOwl 4.0.0, with the startup script you can select which version of IntelOwl you want to run (`--version`).
-This  can be helpful to keep using old versions in case of retrocompatibility issues. The `--version` parameter checks out the Git Repository to the Tag of the version that you have chosen. This means that if you checkout to a v3.x.x version, you won't have the `--version` parameter anymore so you would need to manually checkout back to the `master` branch to use newer versions.
+Starting from IntelOwl 4.0.0, with the startup script you can select which version of IntelOwl you want to run (<code>--version</code>).
+This  can be helpful to keep using old versions in case of retrocompatibility issues. The <code>--version</code> parameter checks out the Git Repository to the Tag of the version that you have chosen. This means that if you checkout to a v3.x.x version, you won't have the <code>--version</code> parameter anymore so you would need to manually checkout back to the <code>master</code> branch to use newer versions.
 </div>
 
 ### Stop
@@ -257,10 +251,7 @@ This is a destructive operation but can be useful to start again the project fro
 ### Users creation
 You may want to run `docker exec -ti intelowl_uwsgi python3 manage.py createsuperuser` after first run to create a superuser.
 Then you can add other users directly from the Django Admin Interface after having logged with the superuser account.
-
-### Django Groups & Permissions settings
-
-Refer to [this](./Advanced-Usage.html#django-groups-permissions) section of the docs.
+To manage users, organizations and their visibility please refer to this [section](/Usage.md#organizations-and-user-management)
 
 ## Update and Re-build
 
@@ -288,13 +279,14 @@ Maintainers strive to keep the upgrade between major version easy but it's not a
 Below you can find the additional process required to upgrade from each major versions.
 </div>
 
-### Updating to >=4.0.0(rc) from a 3.x.x version
+### Updating to >=4.0.0 from a 3.x.x version
 Right now there is an open [issue](https://github.com/intelowlproject/IntelOwl/issues/934) regarding the chance to provide a script for migrate the Users DB to the new IntelOwl v4 schema.
 IntelOwl v4 introduced some major changes regarding the permission management, allowing an easier way to manage users and visibility. But that did break the previous available DB.
 So, while we find time and effort to develop this script, to migrate to the the new major version you would need to delete your DB. To do that, you would need to delete your volumes and start the application from scratch.
 ```commandline
 python3 start.py prod down -v
 ```
+Please be aware that, while this can be an important effort to manage, the v4 IntelOwl provides a easier way to add, invite and manage users from the application itself. See [the Organization section](./Usage.md#organizations-and-user-management).
 
 
 ### Updating to >=2.0.0 from a 1.x.x version
